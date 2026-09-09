@@ -1,0 +1,107 @@
+---
+import "../styles/global.css";
+import LampIntro from "../components/lamp_intro.astro";
+import Nav from "../components/nav.astro";
+import { site } from "../data/site";
+
+interface Props {
+    title?: string;
+    description?: string;
+    bare?: boolean;
+}
+
+const {
+    title = site.name,
+    description = site.tagline,
+    bare = false,
+} = Astro.props;
+---
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={new URL(Astro.url.pathname, site.url)} />
+
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta
+            property="og:url"
+            content={new URL(Astro.url.pathname, site.url)}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;450;500;600;700&family=Oswald:wght@200..700&display=swap"
+        />
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Person",
+                name: site.name,
+                url: site.url,
+                email: `mailto:${site.email}`,
+                sameAs: [site.github, site.linkedin, site.huggingface],
+                alumniOf: {
+                    "@type": "CollegeOrUniversity",
+                    name: "Khulna University of Engineering & Technology",
+                },
+                worksFor: { "@type": "Organization", name: "bKash" },
+            })}
+        />
+
+        <script is:inline>
+            (function () {
+                var de = document.documentElement;
+                var stored = null;
+                try {
+                    stored = localStorage.getItem("theme");
+                } catch (e) {}
+                de.dataset.theme = stored === "dark" ? "dark" : "light";
+
+                var w = de.clientWidth || window.innerWidth || 0;
+                if (w > 0) {
+                    de.style.setProperty(
+                        "--dock-x",
+                        w / 2 - (w < 640 ? 34 : 46) + "px",
+                    );
+                }
+            })();
+        </script>
+    </head>
+    <body>
+        {!bare && <LampIntro />}
+        {!bare && <Nav />}
+        <main class="mx-auto max-w-5xl px-5 sm:px-8">
+            <slot />
+        </main>
+
+        <script>
+            const io = new IntersectionObserver(
+                (entries) => {
+                    for (const e of entries) {
+                        if (e.isIntersecting) {
+                            e.target.classList.add("is-visible");
+                            io.unobserve(e.target);
+                        }
+                    }
+                },
+                { rootMargin: "0px 0px -12% 0px" },
+            );
+            document
+                .querySelectorAll(".reveal")
+                .forEach((el) => io.observe(el));
+        </script>
+    </body>
+</html>
