@@ -1,0 +1,116 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../layout/base.astro";
+import { site } from "../../data/site";
+
+export async function getStaticPaths() {
+    const projects = await getCollection("projects");
+    return projects.map((entry) => ({
+        params: { slug: entry.id },
+        props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+
+const paperUrl = d.paper
+    ? (await getCollection("publications")).find((p) => p.id === d.paper)?.data
+          .url
+    : undefined;
+---
+
+<Base title={`${d.title} — ${site.name}`} description={d.blurb}>
+    <article class="py-12 sm:py-16" style="--i: 0">
+        <a
+            href="/#projects"
+            class="mb-8 inline-block font-mono text-[14px] uppercase tracking-[0.2em] text-muted transition-colors hover:text-accent"
+        >
+            ← All projects
+        </a>
+
+        <header class="mb-10">
+            <div class="mb-3 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                <h1 class="font-serif text-3xl tracking-tight sm:text-4xl">
+                    {d.title}
+                </h1>
+                <span class="font-mono text-[15px] text-muted">{d.year}</span>
+            </div>
+            {d.role && <p class="mb-4 text-[16px] text-muted">{d.role}</p>}
+            <p class="max-w-2xl text-[18px] leading-relaxed text-muted">
+                {d.blurb}
+            </p>
+
+            <ul class="mt-5 flex flex-wrap gap-1.5">
+                {
+                    d.stack.map((s: string) => (
+                        <li class="chip rounded px-2 py-0.5 font-mono text-[13px]">
+                            {s}
+                        </li>
+                    ))
+                }
+            </ul>
+
+            <div class="mt-6 flex flex-wrap gap-2 text-[15px]">
+                {
+                    d.repo && (
+                        <a
+                            href={d.repo}
+                            class="rounded border border-accent-line px-2.5 py-1 text-ink transition-colors hover:bg-accent hover:text-bg"
+                        >
+                            Repository
+                        </a>
+                    )
+                }
+                {
+                    d.demo && (
+                        <a
+                            href={d.demo}
+                            class="rounded border border-accent-line px-2.5 py-1 text-ink transition-colors hover:bg-accent hover:text-bg"
+                        >
+                            Demo
+                        </a>
+                    )
+                }
+                {
+                    d.paper && (
+                        <a
+                            href={paperUrl ?? "/#publications"}
+                            class="rounded border border-accent-line px-2.5 py-1 text-ink transition-colors hover:bg-accent hover:text-bg"
+                        >
+                            Paper
+                        </a>
+                    )
+                }
+            </div>
+        </header>
+
+        <div class="prose-custom max-w-2xl">
+            <Content />
+        </div>
+
+</article>
+</Base>
+
+<style is:global>
+    .prose-custom p {
+        margin-bottom: 1.15rem;
+        font-size: 15px;
+        line-height: 1.75;
+        color: var(--muted);
+    }
+    .prose-custom em {
+        color: var(--ink);
+        font-style: italic;
+    }
+    .prose-custom strong {
+        color: var(--ink);
+        font-weight: 500;
+    }
+    .prose-custom a {
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+</style>
