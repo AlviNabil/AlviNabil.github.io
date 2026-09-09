@@ -1,0 +1,213 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layout/base.astro";
+import { site, experience, education, awards, interests } from "../data/site";
+
+const publications = (await getCollection("publications")).sort(
+    (a, b) => b.data.year - a.data.year,
+);
+const projects = (await getCollection("projects")).sort(
+    (a, b) => a.data.order - b.data.order,
+);
+const featured = projects.filter((p) => p.data.featured);
+
+const skills = [
+    { group: "Languages", items: ["Python", "Dart", "Swift", "C++", "SQL"] },
+    { group: "ML", items: ["PyTorch", "TensorFlow", "Transformers", "NumPy", "scikit-learn"] },
+    { group: "Mobile", items: ["Flutter", "SwiftUI", "UIKit"] },
+    { group: "Backend & tooling", items: ["FastAPI", "Firebase", "Git", "Docker"] },
+];
+---
+
+<Base title={`CV — ${site.name}`}>
+    <article class="mx-auto max-w-3xl py-12 sm:py-16" style="--i: 0">
+        <div class="no-print mb-10 flex items-center justify-between gap-4">
+            <a
+                href="/"
+                class="font-mono text-[14px] uppercase tracking-[0.2em] text-muted transition-colors hover:text-accent"
+            >
+                ← Back
+            </a>
+            <button
+                type="button"
+                id="printCv"
+                class="rounded border border-accent/40 px-3 py-1.5 text-[15px] text-accent transition-colors hover:bg-accent hover:text-bg"
+            >
+                Save as PDF
+            </button>
+        </div>
+
+        <header class="cv-section mb-10 border-b border-line pb-6">
+            <h1 class="mb-2 font-serif text-3xl tracking-tight">
+                <span class="text-accent">{site.firstName}</span>{" "}{site.restName}
+            </h1>
+            <p class="mb-1 text-[17px] text-ink">{site.role}</p>
+            <p class="mb-3 text-[16px] text-accent">{site.seeking}</p>
+            <p class="flex flex-wrap gap-x-3 gap-y-1 text-[15px] text-muted">
+                <a href={`mailto:${site.email}`}>{site.email}</a>
+                <span class="text-line">·</span>
+                <a href={site.github}>github.com/AlviNabil</a>
+                <span class="text-line">·</span>
+                <a href={site.linkedin}>linkedin.com/in/alvi-nabil</a>
+                <span class="text-line">·</span>
+                <a href={site.url}>alvinabil.github.io</a>
+            </p>
+        </header>
+
+        <section class="cv-section mb-9">
+            <h2 class="mb-3 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
+                Research interests
+            </h2>
+            <p class="text-[17px] leading-relaxed text-muted">
+                {interests.map((i) => i.title).join(" · ")}. Broadly, the
+                systems and hardware layers that determine whether a trained
+                model is cheap enough to deploy.
+            </p>
+        </section>
+
+        <section class="cv-section mb-9">
+            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
+                Education
+            </h2>
+            {
+                education.map((e) => (
+                    <div class="mb-4">
+                        <div class="flex flex-wrap items-baseline justify-between gap-2">
+                            <h3 class="text-[18px] text-ink">{e.org}</h3>
+                            <span class="font-mono text-[14px] text-muted">
+                                {e.period}
+                            </span>
+                        </div>
+                        <p class="mb-2 text-[16px] text-muted">
+                            {e.role} · {e.location}
+                        </p>
+                        <ul class="ml-4 list-disc space-y-1">
+                            {e.points.map((p) => (
+                                <li class="text-[16px] leading-relaxed text-muted">
+                                    {p}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))
+            }
+        </section>
+
+        <section class="cv-section mb-9">
+            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
+                Publications
+            </h2>
+            {
+                publications.map((p) => (
+                    <div class="mb-4">
+                        <p class="mb-1 text-[17px] leading-snug text-ink">
+                            {
+                                p.data.url ? (
+                                    <a
+                                        href={p.data.url}
+                                        class="underline decoration-accent-line underline-offset-2 hover:text-accent"
+                                    >
+                                        {p.data.title}
+                                    </a>
+                                ) : (
+                                    p.data.title
+                                )
+                            }
+                        </p>
+                        <p class="text-[15.5px] leading-relaxed text-muted">
+                            {p.data.authors.join(", ")}. <em>{p.data.venue}</em>,{" "}
+                            {p.data.location}, {p.data.year}
+                            {p.data.pages ? `, pp. ${p.data.pages}` : ""}.
+                            {p.data.doi ? ` doi: ${p.data.doi}` : ""}
+                        </p>
+                    </div>
+                ))
+            }
+        </section>
+
+        <section class="cv-section mb-9">
+            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
+                Experience
+            </h2>
+            {
+                experience.map((e) => (
+                    <div class="mb-4">
+                        <div class="flex flex-wrap items-baseline justify-between gap-2">
+                            <h3 class="text-[18px] text-ink">
+                                {e.role}, {e.org}
+                            </h3>
+                            <span class="font-mono text-[14px] text-muted">
+                                {e.period}
+                            </span>
+                        </div>
+                        <p class="mb-2 text-[16px] text-muted">{e.location}</p>
+                        <ul class="ml-4 list-disc space-y-1">
+                            {e.points.map((p) => (
+                                <li class="text-[16px] leading-relaxed text-muted">
+                                    {p}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))
+            }
+        </section>
+
+        <section class="cv-section mb-9">
+            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
+                Selected projects
+            </h2>
+            <ul class="space-y-2.5">
+                {
+                    featured.map((p) => (
+                        <li class="text-[16px] leading-relaxed">
+                            <span class="text-ink">{p.data.title}</span>
+                            <span class="text-muted"> — {p.data.blurb} </span>
+                            <span class="font-mono text-[14px] text-muted">
+                                ({p.data.stack.slice(0, 3).join(", ")})
+                            </span>
+                        </li>
+                    ))
+                }
+            </ul>
+        </section>
+
+        <section class="cv-section mb-9">
+            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
+                Technical skills
+            </h2>
+            <ul class="space-y-1.5">
+                {
+                    skills.map((s) => (
+                        <li class="text-[16px] leading-relaxed">
+                            <span class="text-ink">{s.group}: </span>
+                            <span class="text-muted">{s.items.join(", ")}</span>
+                        </li>
+                    ))
+                }
+            </ul>
+        </section>
+
+        <section class="cv-section">
+            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
+                Awards
+            </h2>
+            <ul class="space-y-1.5">
+                {
+                    awards.map((a) => (
+                        <li class="text-[16px] leading-relaxed">
+                            <span class="text-ink">{a.title}</span>
+                            <span class="text-muted"> — {a.detail}</span>
+                        </li>
+                    ))
+                }
+            </ul>
+        </section>
+    </article>
+</Base>
+
+<script>
+    document
+        .getElementById("printCv")
+        ?.addEventListener("click", () => window.print());
+</script>
