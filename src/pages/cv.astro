@@ -1,7 +1,16 @@
 ---
 import { getCollection } from "astro:content";
 import Base from "../layout/base.astro";
-import { site, experience, education, awards, interests } from "../data/site";
+import {
+    site,
+    experience,
+    education,
+    awards,
+    interests,
+    researchStatement,
+    tests,
+    activities,
+} from "../data/site";
 
 const publications = (await getCollection("publications")).sort(
     (a, b) => b.data.year - a.data.year,
@@ -12,140 +21,130 @@ const projects = (await getCollection("projects")).sort(
 const featured = projects.filter((p) => p.data.featured);
 
 const skills = [
-    { group: "Languages", items: ["Python", "Dart", "Swift", "C++", "SQL"] },
-    { group: "ML", items: ["PyTorch", "TensorFlow", "Transformers", "NumPy", "scikit-learn"] },
-    { group: "Mobile", items: ["Flutter", "SwiftUI", "UIKit"] },
-    { group: "Backend & tooling", items: ["FastAPI", "Firebase", "Git", "Docker"] },
+    {
+        group: "Programming Languages",
+        items: ["Python", "Dart", "Swift", "C", "C++", "Java", "SQL"],
+    },
+    {
+        group: "Markup & Database",
+        items: ["HTML", "CSS", "MySQL"],
+    },
+    {
+        group: "Machine Learning",
+        items: [
+            "PyTorch",
+            "TensorFlow",
+            "Transformers",
+            "NumPy",
+            "scikit-learn",
+        ],
+    },
+    {
+        group: "Mobile & Backend",
+        items: ["Flutter", "SwiftUI", "UIKit", "FastAPI", "Firebase"],
+    },
+    {
+        group: "Document Processing",
+        items: ["LaTeX", "Microsoft Word", "PowerPoint", "Excel"],
+    },
+    {
+        group: "Version Control & Tooling",
+        items: ["Git", "GitHub", "Docker"],
+    },
 ];
 ---
 
-<Base title={`CV — ${site.name}`}>
-    <article class="mx-auto max-w-3xl py-12 sm:py-16" style="--i: 0">
-        <div class="no-print mb-10 flex items-center justify-between gap-4">
-            <a
-                href="/"
-                class="font-mono text-[14px] uppercase tracking-[0.2em] text-muted transition-colors hover:text-accent"
-            >
-                ← Back
-            </a>
-            <button
-                type="button"
-                id="printCv"
-                class="rounded border border-accent/40 px-3 py-1.5 text-[15px] text-accent transition-colors hover:bg-accent hover:text-bg"
-            >
-                Save as PDF
-            </button>
-        </div>
+<Base title={`CV · ${site.name}`} bare>
+    <div class="cv-actions no-print">
+        <a href="/">&larr; Back to site</a>
+        <a href="/Alvi-Ahmmed-Nabil-CV.pdf" download>Download CV</a>
+    </div>
 
-        <header class="cv-section mb-10 border-b border-line pb-6">
-            <h1 class="mb-2 font-serif text-3xl tracking-tight">
-                <span class="text-accent">{site.firstName}</span>{" "}{site.restName}
-            </h1>
-            <p class="mb-1 text-[17px] text-ink">{site.role}</p>
-            <p class="mb-3 text-[16px] text-accent">{site.seeking}</p>
-            <p class="flex flex-wrap gap-x-3 gap-y-1 text-[15px] text-muted">
-                <a href={`mailto:${site.email}`}>{site.email}</a>
-                <span class="text-line">·</span>
-                <a href={site.github}>github.com/AlviNabil</a>
-                <span class="text-line">·</span>
-                <a href={site.linkedin}>linkedin.com/in/alvi-nabil</a>
-                <span class="text-line">·</span>
-                <a href={site.url}>alvinabil.github.io</a>
+    <article class="cv">
+        <header class="cv-head">
+            <h1>{site.name}</h1>
+            <p class="cv-contact">
+                <a href={`mailto:${site.email}`}>{site.email}</a>{" · "}<a
+                    href={`tel:${site.phone}`}>{site.phone}</a
+                >
+            </p>
+            <p class="cv-contact">
+                <a href={site.url}>Website</a>{" · "}<a href={site.linkedin}
+                    >LinkedIn</a
+                >{" · "}<a href={site.huggingface}>Hugging Face</a>{" · "}<a
+                    href={site.github}>GitHub</a
+                >
             </p>
         </header>
 
-        <section class="cv-section mb-9">
-            <h2 class="mb-3 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
-                Research interests
-            </h2>
-            <p class="text-[17px] leading-relaxed text-muted">
-                {interests.map((i) => i.title).join(" · ")}. Broadly, the
-                systems and hardware layers that determine whether a trained
-                model is cheap enough to deploy.
-            </p>
+        <section>
+            <h2>Research Interests</h2>
+            <p>{interests.map((i) => i.title).join(" · ")}</p>
+            <p style="margin-top:4px">{researchStatement}</p>
         </section>
 
-        <section class="cv-section mb-9">
-            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
-                Education
-            </h2>
+        <section>
+            <h2>Education</h2>
             {
                 education.map((e) => (
-                    <div class="mb-4">
-                        <div class="flex flex-wrap items-baseline justify-between gap-2">
-                            <h3 class="text-[18px] text-ink">{e.org}</h3>
-                            <span class="font-mono text-[14px] text-muted">
-                                {e.period}
-                            </span>
+                    <div class="entry">
+                        <div class="entry-head">
+                            <span class="org">{e.org}</span>
+                            <span class="when">{e.period}</span>
                         </div>
-                        <p class="mb-2 text-[16px] text-muted">
-                            {e.role} · {e.location}
-                        </p>
-                        <ul class="ml-4 list-disc space-y-1">
-                            {e.points.map((p) => (
-                                <li class="text-[16px] leading-relaxed text-muted">
-                                    {p}
-                                </li>
-                            ))}
-                        </ul>
+                        <div class="entry-sub">
+                            {e.role}
+                            {e.grade ? ` · ${e.grade}` : ""} · {e.location}
+                        </div>
+                        {e.points.length > 0 && (
+                            <ul>
+                                {e.points.map((pt) => (
+                                    <li>{pt}</li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
                 ))
             }
         </section>
 
-        <section class="cv-section mb-9">
-            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
-                Publications
-            </h2>
+        <section>
+            <h2>Publications</h2>
             {
                 publications.map((p) => (
-                    <div class="mb-4">
-                        <p class="mb-1 text-[17px] leading-snug text-ink">
-                            {
-                                p.data.url ? (
-                                    <a
-                                        href={p.data.url}
-                                        class="underline decoration-accent-line underline-offset-2 hover:text-accent"
-                                    >
-                                        {p.data.title}
-                                    </a>
-                                ) : (
-                                    p.data.title
-                                )
-                            }
-                        </p>
-                        <p class="text-[15.5px] leading-relaxed text-muted">
-                            {p.data.authors.join(", ")}. <em>{p.data.venue}</em>,{" "}
+                    <div class="entry">
+                        <div class="pub-title">
+                            {p.data.url ? (
+                                <a href={p.data.url}>{p.data.title}</a>
+                            ) : (
+                                p.data.title
+                            )}
+                        </div>
+                        <div class="pub-meta">
+                            {p.data.authors.join(", ")}. {p.data.venue},{" "}
                             {p.data.location}, {p.data.year}
                             {p.data.pages ? `, pp. ${p.data.pages}` : ""}.
-                            {p.data.doi ? ` doi: ${p.data.doi}` : ""}
-                        </p>
+                        </div>
                     </div>
                 ))
             }
         </section>
 
-        <section class="cv-section mb-9">
-            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
-                Experience
-            </h2>
+        <section>
+            <h2>Experience</h2>
             {
                 experience.map((e) => (
-                    <div class="mb-4">
-                        <div class="flex flex-wrap items-baseline justify-between gap-2">
-                            <h3 class="text-[18px] text-ink">
+                    <div class="entry">
+                        <div class="entry-head">
+                            <span class="org">
                                 {e.role}, {e.org}
-                            </h3>
-                            <span class="font-mono text-[14px] text-muted">
-                                {e.period}
                             </span>
+                            <span class="when">{e.period}</span>
                         </div>
-                        <p class="mb-2 text-[16px] text-muted">{e.location}</p>
-                        <ul class="ml-4 list-disc space-y-1">
-                            {e.points.map((p) => (
-                                <li class="text-[16px] leading-relaxed text-muted">
-                                    {p}
-                                </li>
+                        <div class="entry-sub">{e.location}</div>
+                        <ul>
+                            {e.points.map((pt) => (
+                                <li>{pt}</li>
                             ))}
                         </ul>
                     </div>
@@ -153,61 +152,271 @@ const skills = [
             }
         </section>
 
-        <section class="cv-section mb-9">
-            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
-                Selected projects
-            </h2>
-            <ul class="space-y-2.5">
-                {
-                    featured.map((p) => (
-                        <li class="text-[16px] leading-relaxed">
-                            <span class="text-ink">{p.data.title}</span>
-                            <span class="text-muted"> — {p.data.blurb} </span>
-                            <span class="font-mono text-[14px] text-muted">
-                                ({p.data.stack.slice(0, 3).join(", ")})
+        <section>
+            <h2>Selected Projects</h2>
+            {
+                featured.map((p) => (
+                    <div class="entry">
+                        <div class="entry-head">
+                            <span class="org">
+                                {p.data.tag && `(${p.data.tag}) `}
+                                {p.data.repo ? (
+                                    <a href={p.data.repo}>{p.data.title}</a>
+                                ) : (
+                                    p.data.title
+                                )}
                             </span>
+                            <span class="when">{p.data.year}</span>
+                        </div>
+                        <ul>
+                            <li>
+                                {p.data.blurb} Using {p.data.stack.join(", ")}.
+                                {p.data.repo && (
+                                    <>
+                                        {" "}
+                                        <a href={p.data.repo}>(GitHub)</a>
+                                    </>
+                                )}
+                            </li>
+                        </ul>
+                    </div>
+                ))
+            }
+        </section>
+
+        <section>
+            <h2>Test Scores</h2>
+            <ul class="tight">
+                {
+                    tests.map((t) => (
+                        <li>
+                            <span class="label">{t.name}:</span> {t.detail}
                         </li>
                     ))
                 }
             </ul>
         </section>
 
-        <section class="cv-section mb-9">
-            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
-                Technical skills
-            </h2>
-            <ul class="space-y-1.5">
+        <section>
+            <h2>Technical Skills</h2>
+            <ul class="tight">
                 {
                     skills.map((s) => (
-                        <li class="text-[16px] leading-relaxed">
-                            <span class="text-ink">{s.group}: </span>
-                            <span class="text-muted">{s.items.join(", ")}</span>
+                        <li>
+                            <span class="label">{s.group}:</span>{" "}
+                            {s.items.join(", ")}
                         </li>
                     ))
                 }
             </ul>
         </section>
 
-        <section class="cv-section">
-            <h2 class="mb-4 font-mono text-[14px] uppercase tracking-[0.2em] text-accent">
-                Awards
-            </h2>
-            <ul class="space-y-1.5">
+        <section>
+            <h2>Activities</h2>
+            <ul class="tight">
                 {
-                    awards.map((a) => (
-                        <li class="text-[16px] leading-relaxed">
-                            <span class="text-ink">{a.title}</span>
-                            <span class="text-muted"> — {a.detail}</span>
+                    activities.map((a) => (
+                        <li>
+                            <span class="label">{a.title}</span>. {a.detail}
                         </li>
                     ))
                 }
             </ul>
+        </section>
+
+        <section>
+            <h2>Awards</h2>
+            {
+                awards.map((a) => (
+                    <div class="entry">
+                        <div class="org">{a.title}</div>
+                        <ul>
+                            {(a.cvItems ?? a.items).map((it) => (
+                                <li>{it}</li>
+                            ))}
+                        </ul>
+                    </div>
+                ))
+            }
         </section>
     </article>
 </Base>
 
-<script>
-    document
-        .getElementById("printCv")
-        ?.addEventListener("click", () => window.print());
-</script>
+<style is:global>
+    body:has(.cv) {
+        background: #fff;
+        color: #000;
+    }
+
+    .cv-actions {
+        max-width: 46rem;
+        margin: 1.5rem auto 0;
+        padding: 0 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+    }
+    .cv-actions a,
+    .cv-actions button {
+        color: #444;
+        background: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px 10px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .cv-actions a:hover,
+    .cv-actions button:hover {
+        color: #000;
+        border-color: #000;
+    }
+
+    .cv {
+        max-width: 46rem;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 4rem;
+        background: #fff;
+        color: #000;
+        font-family:
+            Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia,
+            "Times New Roman", serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.4;
+    }
+
+    .cv a {
+        color: #0563c1;
+        text-decoration: none;
+    }
+    .cv a:hover {
+        text-decoration: underline;
+    }
+
+    .cv-head {
+        text-align: center;
+        margin-bottom: 1.4rem;
+    }
+    .cv-head h1 {
+        font-size: 25px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        margin: 0 0 0.15rem;
+    }
+    .cv-contact {
+        font-size: 13.5px;
+        margin: 0 0 0.1rem;
+    }
+    .cv-contact:last-child {
+        margin-bottom: 0;
+    }
+
+    .cv section {
+        margin-bottom: 1rem;
+    }
+    .cv h2 {
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border-bottom: 1px solid #000;
+        padding-bottom: 2px;
+        margin: 0 0 0.45rem;
+    }
+
+    .cv .entry {
+        margin-bottom: 0.5rem;
+    }
+    .cv .entry:last-child {
+        margin-bottom: 0;
+    }
+    .cv .entry-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 1rem;
+    }
+    .cv .org {
+        font-weight: 700;
+    }
+    .cv .when {
+        white-space: nowrap;
+        font-size: 13.5px;
+    }
+    .cv .entry-sub {
+        font-size: 14px;
+    }
+
+    .cv p {
+        margin: 0;
+    }
+    .cv ul {
+        margin: 0.15rem 0 0;
+        padding-left: 1.1rem;
+        list-style: none;
+    }
+    .cv li {
+        position: relative;
+        margin-bottom: 0.12rem;
+    }
+    .cv li::before {
+        content: "–";
+        position: absolute;
+        left: -1.1rem;
+    }
+    .cv ul.tight li {
+        margin-bottom: 0.1rem;
+    }
+    .cv .label {
+        font-weight: 700;
+    }
+
+    .cv .pub-title {
+        font-weight: 700;
+    }
+    .cv .pub-meta {
+        font-size: 14px;
+    }
+
+    @media print {
+        @page {
+            margin: 14mm 15mm;
+        }
+        .cv-actions {
+            display: none !important;
+        }
+        .cv {
+            max-width: none;
+            padding: 0;
+            font-size: 10pt;
+            line-height: 1.32;
+        }
+        .cv h2 {
+            font-size: 10pt;
+        }
+        .cv-head h1 {
+            font-size: 17pt;
+        }
+        .cv section {
+            break-inside: auto;
+            margin-bottom: 8pt;
+        }
+        .cv h2 {
+            break-after: avoid;
+        }
+        .cv .entry {
+            break-inside: avoid;
+        }
+        .cv li {
+            break-inside: avoid;
+        }
+        .cv a {
+            color: #0563c1;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+</style>
