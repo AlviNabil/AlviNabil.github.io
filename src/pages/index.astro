@@ -1,17 +1,312 @@
 ---
+import { getCollection } from "astro:content";
+import Base from "../layout/base.astro";
+import Section from "../components/section.astro";
+import ProjectCard from "../components/project_card.astro";
+import PublicationCard from "../components/publication_card.astro";
+import Icon from "../components/icon.astro";
+import {
+	site,
+	interests,
+	keywords,
+	experience,
+	education,
+	awards,
+} from "../data/site";
 
+const projects = (await getCollection("projects")).sort(
+	(a, b) => a.data.order - b.data.order,
+);
+const featured = projects.filter((p) => p.data.featured);
+const earlier = projects.filter((p) => !p.data.featured);
+const publications = (await getCollection("publications")).sort(
+	(a, b) => b.data.year - a.data.year,
+);
+
+const socials = [
+	{ href: site.github, label: "GitHub", icon: "github" as const },
+	{ href: site.linkedin, label: "LinkedIn", icon: "linkedin" as const },
+	{
+		href: site.huggingface,
+		label: "Hugging Face",
+		icon: "huggingface" as const,
+	},
+	{ href: "/cv", label: "CV", icon: "cv" as const },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base>
+	<header id="intro" class="intro-glow py-16 sm:py-24" style="--i: 0">
+		<div
+			class="flex flex-col items-center gap-8 text-center sm:flex-row sm:items-start sm:gap-10 sm:text-left"
+		>
+			<div
+				class="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-surface font-serif text-2xl text-muted ring-1 ring-accent-line sm:h-32 sm:w-32"
+				aria-hidden="true"
+			>
+				<span class="col-start-1 row-start-1">AN</span>
+				<img
+					src="/img/alvi.jpg"
+					alt=""
+					width="128"
+					height="128"
+					onerror="this.remove()"
+					class="col-start-1 row-start-1 h-full w-full rounded-full object-cover"
+				/>
+			</div>
+			<div>
+				<h1
+					id="heroName"
+					class="mb-3 font-serif text-3xl tracking-tight sm:text-5xl"
+				>
+					<span class="text-accent">{site.firstName}</span>{" "}{
+						site.restName
+					}
+				</h1>
+
+				<p
+					class="mb-4 text-[19px] font-semibold text-ink sm:text-[21px]"
+				>
+					AI/ML Researcher &amp; Engineer
+				</p>
+
+				<p class="mb-5 max-w-xl text-[17px] leading-relaxed text-ink">
+					I work across NLP, GPU computing, on-device AI systems, and
+					Human-AI interaction. I have a
+					first-author IEEE publication and 3+ years as an ML/software
+					engineer at{" "}<span class="text-accent">bKash</span>,
+					Bangladesh's largest mobile financial platform, serving 80M+
+					users. I like building things that show what a model is
+					actually doing, and I am also interested in computer vision,
+					astrophysics and fractals.
+				</p>
+
+				<p
+					class="mb-6 inline-flex items-center gap-2.5 rounded-full border border-accent-line bg-accent-soft px-3.5 py-1.5 text-[15px] text-accent"
+				>
+					<span class="status-dot" aria-hidden="true"></span>
+					Seeking PhD positions for Fall 2027
+				</p>
+				<ul
+					class="mb-6 flex flex-wrap justify-center gap-2 sm:justify-start"
+					aria-label="Research interests"
+				>
+					{
+						keywords.map((k) => (
+							<li class="chip rounded-full px-3 py-1 text-[13px] leading-none">
+								{k}
+							</li>
+						))
+					}
+				</ul>
+				<ul
+					class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-[16px] sm:justify-start"
+				>
+					{
+						socials.map((s) => (
+							<li>
+								<a
+									href={s.href}
+									class="inline-flex items-center gap-2 text-muted transition-colors hover:text-accent"
+								>
+									<Icon
+										name={s.icon}
+										class="h-[1.05em] w-[1.05em] shrink-0"
+									/>
+									<span class="underline decoration-line underline-offset-4 group-hover:decoration-accent">
+										{s.label}
+									</span>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+
+				<p class="mt-4 text-[16px]">
+					<a
+						href={`mailto:${site.email}`}
+						class="inline-flex items-center gap-2 text-muted transition-colors hover:text-accent"
+					>
+						<Icon
+							name="email"
+							class="h-[1.05em] w-[1.05em] shrink-0"
+						/>
+						<span
+							class="underline decoration-line underline-offset-4"
+						>
+							{site.email}
+						</span>
+					</a>
+				</p>
+			</div>
+		</div>
+	</header>
+
+	<div style="--i: 1">
+		<Section
+			id="research"
+			label="Research"
+			title="Research Interest & What I want to work on"
+		>
+			<p class="mb-8 max-w-2xl text-[18px] leading-relaxed text-muted">
+				<!-- Fine-tuning transformers for my thesis meant queueing jobs on a
+				single GTX 1070 Ti. Serving OCR inside bKash's onboarding flow
+				meant every millisecond and megabyte showed up as a cost line.
+				Same constraint, approached from opposite ends, and the
+				interesting problems live in between: quantization, kernel
+				efficiency, and what has to give when a model moves off a
+				cluster and onto a phone. -->
+			</p>
+			<ul class="grid gap-3 sm:grid-cols-2">
+				{
+					interests.map((it) => (
+						<li class="card rounded-lg p-4">
+							<h3 class="mb-1.5 text-sm font-medium text-accent">
+								{it.title}
+							</h3>
+							<p class="text-[16px] leading-relaxed text-muted">
+								{it.body}
+							</p>
+						</li>
+					))
+				}
+			</ul>
+		</Section>
+
+		<Section
+			id="publications"
+			label="Publications"
+			title="Peer-reviewed work"
+		>
+			<div class="grid gap-4">
+				{publications.map((p) => <PublicationCard entry={p} />)}
+			</div>
+		</Section>
+
+		<Section id="projects" label="Projects" title="Selected work">
+			<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+				{featured.map((p) => <ProjectCard entry={p} />)}
+			</div>
+
+			{
+				earlier.length > 0 && (
+					<div class="mt-10">
+						<h3 class="mb-2 font-mono text-[14px] uppercase tracking-[0.2em] text-muted">
+							Earlier work
+						</h3>
+						<div>
+							{earlier.map((p) => (
+								<ProjectCard entry={p} compact />
+							))}
+						</div>
+					</div>
+				)
+			}
+		</Section>
+
+		<Section id="experience" label="Experience" title="Industry">
+			<ol class="grid gap-8">
+				{
+					experience.map((e) => (
+						<li>
+							<div class="mb-1 flex flex-wrap items-baseline justify-between gap-2">
+								<h3 class="font-serif text-lg">
+									{e.role},{" "}
+									<span class="text-accent">{e.org}</span>
+								</h3>
+								<span class="font-mono text-[14px] text-muted">
+									{e.period}
+								</span>
+							</div>
+							{e.location && (
+								<p class="mb-3 text-[15px] text-muted">
+									{e.location}
+								</p>
+							)}
+							<ul class="grid gap-2.5">
+								{e.points.map((pt) => (
+									<li class="flex gap-2.5 text-[17px] leading-relaxed text-muted">
+										<span class="mt-2 h-px w-3 shrink-0 bg-accent" />
+										<span>{pt}</span>
+									</li>
+								))}
+							</ul>
+						</li>
+					))
+				}
+			</ol>
+		</Section>
+
+		<Section id="education" label="Education" title="Background">
+			<ol class="grid gap-8">
+				{
+					education.map((e) => (
+						<li>
+							<div class="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+								<h3 class="font-serif text-lg">{e.org}</h3>
+								<span class="font-mono text-[14px] text-muted">
+									{e.period}
+								</span>
+							</div>
+							<p class="mb-3 text-[17px] text-ink">{e.role}</p>
+							<ul class="grid gap-2.5">
+								{e.points.map((pt) => (
+									<li class="flex gap-2.5 text-[17px] leading-relaxed text-muted">
+										<span class="mt-2 h-px w-3 shrink-0 bg-accent" />
+										<span>{pt}</span>
+									</li>
+								))}
+							</ul>
+						</li>
+					))
+				}
+			</ol>
+
+			<div class="mt-8 border-t border-line pt-6">
+				<h3
+					class="mb-3 font-mono text-[14px] uppercase tracking-[0.2em] text-muted"
+				>
+					Awards
+				</h3>
+				<ul class="grid gap-2">
+					{
+						awards.map((a) => (
+							<li class="text-[17px] leading-relaxed">
+								<span class="text-ink">{a.title}</span>
+								<ul class="mt-1 grid gap-1">
+									{a.items.map((it) => (
+										<li class="flex gap-2.5 text-muted">
+											<span class="mt-2.5 h-px w-3 shrink-0 bg-accent" />
+											<span>{it}</span>
+										</li>
+									))}
+								</ul>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</Section>
+
+		<Section id="contact" label="Contact" title="Get in touch">
+			<p class="mb-5 max-w-3xl text-[18px] leading-relaxed text-muted">
+				I am applying to PhD programs for entry in Fall 2027. If your
+				lab works on efficient machine learning, GPU systems, on-device
+				inference, or human-AI interaction, or if you would like to
+				collaborate on any project or share/discuss something
+				interesting related to my research interest, I would be glad to
+				talk.
+			</p>
+			<a
+				href={`mailto:${site.email}`}
+				class="inline-block rounded border border-accent-line bg-accent-soft px-4 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-bg"
+			>
+				{site.email}
+			</a>
+		</Section>
+
+		<footer class="border-t border-line py-8 text-[15px] text-muted">
+			<p>© {new Date().getFullYear()} {site.name}</p>
+		</footer>
+	</div>
+</Base>
