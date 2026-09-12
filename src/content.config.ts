@@ -30,6 +30,7 @@ const projects = defineCollection({
         blurb: z.string(),
         year: z.string(),
         role: z.string().optional(),
+        tag: z.string().optional(),
         stack: z.array(z.string()).default([]),
         repo: z.string().optional(),
         paper: z.string().optional(),

@@ -8,8 +8,8 @@ repo: "https://github.com/AlviNabil/iFit-iOS-fitness-App-"
 order: 5
 ---
 
-A fitness tracking app for iOS — workout logging, progress over time, and a
+A fitness tracking app for iOS with workout logging, progress over time, and a
 Firebase backend for accounts and sync.
 
-Built in 2022, a year before mobile development became my job. Listed for
-completeness rather than as representative work.
+Built in 2022, a year before mobile development became my job. I keep it here
+for completeness.

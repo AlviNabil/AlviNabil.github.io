@@ -38,9 +38,9 @@ Time-sensitive emergency posts on Bangla social media go unnoticed because no
 automated triage exists for a language with very little NLP infrastructure. This
 work builds the missing dataset and benchmarks transformer models on it.
 
-I collected and annotated 5,836 posts across nine emergency categories —
+I collected and annotated 5,836 posts across nine emergency categories:
 accident, blood, crime, fire, natural disaster, pandemic, suicide, war and
-weather — split 3,267 / 819 / 1,750 for training, validation and test. The
+weather. These were split 3,267 / 819 / 1,750 for training, validation and test. The
 classes are heavily imbalanced by nature: crime accounts for 42.7% of posts and
 pandemic for 2.5%, which is what makes the task harder than its size suggests.
 
