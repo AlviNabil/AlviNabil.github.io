@@ -11,8 +11,8 @@ interface Props {
 }
 
 const {
-    title = site.name,
-    description = site.tagline,
+    title = `${site.name} · ${site.headline}`,
+    description = site.description,
     bare = false,
 } = Astro.props;
 ---
@@ -28,15 +28,16 @@ const {
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Alvi Nabil" />
 
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content={site.name} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta
             property="og:url"
             content={new URL(Astro.url.pathname, site.url)}
         />
-        <meta name="twitter:card" content="summary_large_image" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
