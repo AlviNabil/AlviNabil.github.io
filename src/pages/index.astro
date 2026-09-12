@@ -71,13 +71,14 @@ const socials = [
 				</p>
 
 				<p class="mb-5 max-w-xl text-[17px] leading-relaxed text-ink">
-					I work across NLP, GPU computing, and on-device AI systems,
-					with an interest in Human-AI interaction. I have a
+					I work across NLP, GPU computing, on-device AI systems, and
+					Human-AI interaction. I have a
 					first-author IEEE publication and 3+ years as an ML/software
-					engineer at{" "}<span class="text-accent">bKash</span> — Bangladesh's
-					largest mobile financial platform, serving 80M+ users. I am drawn
-					to making AI models visible rather than taking them on trust,
-					and I am also interested in fractals.
+					engineer at{" "}<span class="text-accent">bKash</span>,
+					Bangladesh's largest mobile financial platform, serving 80M+
+					users. I like building things that show what a model is
+					actually doing, and I am also interested in computer vision,
+					astrophysics and fractals.
 				</p>
 
 				<p
@@ -151,7 +152,7 @@ const socials = [
 				<!-- Fine-tuning transformers for my thesis meant queueing jobs on a
 				single GTX 1070 Ti. Serving OCR inside bKash's onboarding flow
 				meant every millisecond and megabyte showed up as a cost line.
-				Same constraint, approached from opposite ends — and the
+				Same constraint, approached from opposite ends, and the
 				interesting problems live in between: quantization, kernel
 				efficiency, and what has to give when a model moves off a
 				cluster and onto a phone. -->
@@ -272,7 +273,14 @@ const socials = [
 						awards.map((a) => (
 							<li class="text-[17px] leading-relaxed">
 								<span class="text-ink">{a.title}</span>
-								<span class="text-muted"> — {a.detail}</span>
+								<ul class="mt-1 grid gap-1">
+									{a.items.map((it) => (
+										<li class="flex gap-2.5 text-muted">
+											<span class="mt-2.5 h-px w-3 shrink-0 bg-accent" />
+											<span>{it}</span>
+										</li>
+									))}
+								</ul>
 							</li>
 						))
 					}
