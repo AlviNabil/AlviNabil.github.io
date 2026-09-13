@@ -1,0 +1,60 @@
+---
+interface Props {
+    entry: any;
+}
+const { entry } = Astro.props;
+const d = entry.data;
+---
+
+<article class="card rounded-lg p-5 sm:p-6">
+    <div class="mb-2 flex flex-wrap items-center gap-2 font-mono text-[14px] text-muted">
+        <span class="chip rounded px-2 py-0.5">{d.venueShort}</span>
+        <span>{d.location}</span>
+    </div>
+
+    <h3 class="mb-2 font-serif text-lg leading-snug sm:text-xl">{d.title}</h3>
+
+    <p class="mb-4 text-[16px] leading-relaxed text-muted">
+        {
+            d.authors.map((a: string, i: number) => (
+                <>
+                    <span class={a === "Alvi Ahmmed Nabil" ? "text-ink" : ""}>{a}</span>
+                    {i < d.authors.length - 1 ? ", " : ""}
+                </>
+            ))
+        }
+    </p>
+
+    <p class="mb-5 text-sm leading-relaxed text-muted">{d.venue}</p>
+
+    <div class="flex flex-wrap gap-2 text-[15px]">
+        {d.url && <a href={d.url} class="rounded border border-accent-line bg-accent-soft px-2.5 py-1 text-accent transition-colors hover:bg-accent hover:text-bg">IEEE Xplore</a>}
+        {d.code && <a href={d.code} class="rounded border border-accent-line px-2.5 py-1 text-ink transition-colors hover:bg-accent hover:text-bg">Code</a>}
+        {d.models && <a href={d.models} class="rounded border border-accent-line px-2.5 py-1 text-ink transition-colors hover:bg-accent hover:text-bg">Models</a>}
+        {d.dataset && <a href={d.dataset} class="rounded border border-accent-line px-2.5 py-1 text-ink transition-colors hover:bg-accent hover:text-bg">Dataset</a>}
+        {d.pdf && <a href={d.pdf} class="rounded border border-accent-line px-2.5 py-1 text-ink transition-colors hover:bg-accent hover:text-bg">PDF</a>}
+        <button
+            type="button"
+            class="cite-btn rounded border border-accent-line px-2.5 py-1 text-ink transition-colors hover:bg-accent hover:text-bg"
+            data-bibtex={d.bibtex}
+        >
+            Cite
+        </button>
+    </div>
+</article>
+
+<script>
+    document.querySelectorAll<HTMLButtonElement>(".cite-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+            const text = btn.dataset.bibtex ?? "";
+            const original = btn.textContent;
+            try {
+                await navigator.clipboard.writeText(text);
+                btn.textContent = "Copied";
+            } catch (e) {
+                btn.textContent = "Copy failed";
+            }
+            setTimeout(() => (btn.textContent = original), 1600);
+        });
+    });
+</script>

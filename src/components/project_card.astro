@@ -1,0 +1,51 @@
+---
+interface Props {
+    entry: any;
+    compact?: boolean;
+}
+const { entry, compact = false } = Astro.props;
+const d = entry.data;
+---
+
+{
+    compact ? (
+        <a
+            href={`/projects/${entry.id}`}
+            class="group flex items-baseline justify-between gap-4 border-b border-line py-3.5 transition-colors hover:border-accent"
+        >
+            <span class="flex items-baseline gap-3">
+                <span class="text-sm transition-colors group-hover:text-accent">{d.title}</span>
+                <span class="hidden text-[16px] text-muted sm:inline">{d.blurb}</span>
+            </span>
+            <span class="shrink-0 font-mono text-[14px] text-muted">{d.year}</span>
+        </a>
+    ) : (
+        <a
+            href={`/projects/${entry.id}`}
+            class="card group flex flex-col overflow-hidden rounded-lg"
+        >
+            {d.cover && (
+                <div class="aspect-[16/10] overflow-hidden border-b border-line bg-bg">
+                    <img
+                        src={d.cover}
+                        alt=""
+                        loading="lazy"
+                        class="h-full w-full object-cover object-top opacity-80 transition-opacity group-hover:opacity-100"
+                    />
+                </div>
+            )}
+            <div class="flex flex-1 flex-col p-5">
+                <div class="mb-1.5 flex items-baseline justify-between gap-3">
+                    <h3 class="font-serif text-lg transition-colors group-hover:text-accent">{d.title}</h3>
+                    <span class="shrink-0 font-mono text-[14px] text-muted">{d.year}</span>
+                </div>
+                <p class="mb-4 flex-1 text-[16px] leading-relaxed text-muted">{d.blurb}</p>
+                <ul class="flex flex-wrap gap-1.5">
+                    {d.stack.slice(0, 4).map((s: string) => (
+                        <li class="chip rounded px-1.5 py-0.5 font-mono text-[13px]">{s}</li>
+                    ))}
+                </ul>
+            </div>
+        </a>
+    )
+}
