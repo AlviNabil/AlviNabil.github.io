@@ -51,7 +51,7 @@ export const interests = [
 export const tests = [
     {
         name: "GRE",
-        detail: "Quantitative 167 · Verbal 155 (March 2026)",
+        detail: "Quantitative 167 · Verbal 155",
     },
     {
         name: "IELTS",
