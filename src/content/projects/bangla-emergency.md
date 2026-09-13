@@ -1,6 +1,6 @@
 ---
 title: "Bangla Emergency Post Classification"
-blurb: "A nine-class emergency triage system for Bangla social media, built on a dataset that did not exist before."
+blurb: "A nine-class emergency triage system for Bangla social media, trained on 5,836 posts I collected and annotated."
 year: "2023"
 role: "Undergraduate thesis · first author"
 tag: "Thesis"
